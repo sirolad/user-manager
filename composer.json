@@ -1,5 +1,0 @@
-{
-    "require": {
-        "symfony/orm-pack": "^1.0"
-    }
-}
