@@ -1,3 +1,4 @@
 /logs
 /symfony
 .idea/
+.DS_Store
