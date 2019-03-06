@@ -2,3 +2,4 @@
 /symfony
 .idea/
 .DS_Store
+/vendor/
