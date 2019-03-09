@@ -17,16 +17,6 @@ class TeamController extends AbstractController
     {
         $this->service = $service;
     }
-    /**
-     * @Route("/team", name="team", methods={"GET"})
-     */
-    public function index()
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/TeamController.php',
-        ]);
-    }
 
     /**
      * @Route("/team", name="add_team", methods={"POST"})
@@ -46,5 +36,29 @@ class TeamController extends AbstractController
         return new JsonResponse([
             'message' => 'successfully added team',
         ], 201);
+    }
+
+    /**
+     * @Route("/team/{id}", name="delete_team", methods={"DELETE"})
+     * @param $id
+     * @return JsonResponse
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function delete($id)
+    {
+        $deleted = $this->service->deleteTeam($id);
+
+        if (gettype($deleted) == 'string') {
+            return new JsonResponse(['error' => (string) $deleted], 403);
+        }
+        if ($deleted) {
+            return new JsonResponse([
+                'message' => 'successfully deleted team',
+            ], 204);
+        }
+
+        return new JsonResponse(['error' => $deleted], 404);
     }
 }

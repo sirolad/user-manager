@@ -35,7 +35,8 @@ class TeamUser
     /**
      * @param $teamId
      * @param $userId
-     * @return string
+     * @return bool|string
+     * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
@@ -44,12 +45,18 @@ class TeamUser
         $teamUser = new UserTeam();
         $team = $this->teamRepository->find($teamId);
         $user = $this->userRepository->find($userId);
+
         if (!$team) {
             return "Team Does Not Exist";
         }
 
         if (!$user) {
             return "User Does Not Exist";
+        }
+
+        $userExist = $this->userTeamRepository->findUserByTeam($teamId, $userId);
+        if ($userExist) {
+            return "User Already belongs to this team";
         }
         $teamUser->setTeam($team);
         $teamUser->setUser($user);
@@ -58,9 +65,21 @@ class TeamUser
         return true;
     }
 
-    protected function findUserByTeam($team, $userId)
+    /**
+     * @param $teamId
+     * @param $userId
+     * @return bool
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function deleteUserFromTeam($teamId, $userId)
     {
+        $userExist = $this->userTeamRepository->findUserByTeam($teamId, $userId);
+        if ($userExist) {
+            $this->userTeamRepository->delete($userExist);
 
-        $this->teamRepository->findBy([])
+            return true;
+        }
     }
 }

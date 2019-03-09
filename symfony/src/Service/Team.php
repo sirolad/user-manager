@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Repository\TeamRepository;
+use App\Repository\UserTeamRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -12,10 +13,17 @@ class Team
 
     protected $teamRepository;
 
-    public function __construct(ValidatorInterface $validator, TeamRepository $teamRepository)
+    protected $userTeamRepository;
+
+    public function __construct(
+        ValidatorInterface $validator,
+        TeamRepository $teamRepository,
+        UserTeamRepository $userTeamRepository
+    )
     {
         $this->validator = $validator;
         $this->teamRepository = $teamRepository;
+        $this->userTeamRepository = $userTeamRepository;
     }
 
     /**
@@ -32,9 +40,32 @@ class Team
         if ($errors->count()) {
             return $errors;
         }
-        var_dump('crossed');
+
         $this->teamRepository->save($team);
 
         return true;
+    }
+
+    /**
+     * @param $id
+     * @return bool|string
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function deleteTeam($id)
+    {
+        $teamHasMembers = $this->userTeamRepository->findTeamMembers($id);
+
+        if ($teamHasMembers) {
+            return "Cannot delete a team that has members";
+        }
+
+        $team = $this->teamRepository->find($id);
+        if ($team) {
+            $this->teamRepository->delete($team);
+
+            return true;
+        }
     }
 }

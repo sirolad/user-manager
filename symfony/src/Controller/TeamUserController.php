@@ -38,10 +38,35 @@ class TeamUserController extends AbstractController
      */
     public function store(int $teamId, int $userId)
     {
-        $this->service->addUserToTeam($teamId, $userId);
+        $response = $this->service->addUserToTeam($teamId, $userId);
 
+        if (gettype($response) == 'string') {
+            return new JsonResponse(['error' => (string) $response], 403);
+        }
         return new JsonResponse([
-            'message' => 'successfully added user to Team',
+            'message' => 'User successfully added to team',
         ], 201);
+    }
+
+    /**
+     * @Route("/team/{teamId}/user/{userId}", name="delete_team_user", methods={"DELETE"})
+     * @param int $teamId
+     * @param int $userId
+     * @return JsonResponse
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function delete(int $teamId, int $userId)
+    {
+        $deleted = $this->service->deleteUserFromTeam($teamId, $userId);
+
+        if ($deleted) {
+            return new JsonResponse([
+                'message' => 'successfully deleted user from team',
+            ], 204);
+        }
+
+        return new JsonResponse(['error' => 'User does not Exist'], 404);
     }
 }

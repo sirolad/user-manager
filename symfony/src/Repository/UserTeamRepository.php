@@ -41,4 +41,36 @@ class UserTeamRepository extends ServiceEntityRepository
         $this->_em->remove($userTeam);
         $this->_em->flush();
     }
+
+    /**
+     * @param $teamId
+     * @param $userId
+     * @return UserTeam|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findUserByTeam($teamId, $userId): ?UserTeam
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.user = :user')
+            ->andWhere('u.team = :team')
+            ->setParameter('user', $userId)
+            ->setParameter('team', $teamId)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    /**
+     * @param $teamId
+     * @return mixed
+     */
+    public function findTeamMembers($teamId)
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.team = :team')
+            ->setParameter('team', $teamId)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
