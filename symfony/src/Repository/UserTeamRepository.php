@@ -19,32 +19,26 @@ class UserTeamRepository extends ServiceEntityRepository
         parent::__construct($registry, UserTeam::class);
     }
 
-    // /**
-    //  * @return UserTeam[] Returns an array of UserTeam objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param UserTeam $user
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function save(UserTeam $user)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        // _em is EntityManager which is DI by the base class
+        $this->_em->persist($user);
+        $this->_em->flush();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?UserTeam
+    /**
+     * @param $userTeam
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function delete($userTeam)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $this->_em->remove($userTeam);
+        $this->_em->flush();
     }
-    */
 }

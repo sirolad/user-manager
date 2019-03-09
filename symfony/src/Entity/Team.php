@@ -3,9 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TeamRepository")
+ * @UniqueEntity(fields="name", message="That team name is taken!")
  */
 class Team
 {
@@ -18,6 +21,8 @@ class Team
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Assert\NotBlank()
+     * @Assert\Length(min = 4, minMessage = "Team Name should be at least 4 characters")
      */
     private $name;
 
