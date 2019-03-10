@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -11,7 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields="name", message="That name is taken!")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -25,6 +26,11 @@ class User
      * @Assert\NotBlank()
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="string", unique=true)
+     */
+    private $apiKey;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Role")
@@ -59,5 +65,27 @@ class User
         $this->role = $role;
 
         return $this;
+    }
+
+    public function getUsername()
+    {
+        return $this->name;
+    }
+
+    public function getRoles()
+    {
+        return $this->getRole();
+    }
+
+    public function getPassword()
+    {
+    }
+
+    public function getSalt()
+    {
+    }
+
+    public function eraseCredentials()
+    {
     }
 }

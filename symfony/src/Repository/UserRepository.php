@@ -41,4 +41,19 @@ class UserRepository extends ServiceEntityRepository
         $this->_em->remove($user);
         $this->_em->flush();
     }
+
+    /**
+     * @param $value
+     * @return User|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findOneByName($value): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.name = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }
