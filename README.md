@@ -1,69 +1,54 @@
 User Management
 ==============
+This is a simple backend task for User management
 
 # Installation
 
 First, clone this repository:
 
 ```bash
-$ git clone https://github.com/eko/docker-symfony.git
+$ git clone https://github.com/andela-sakande/user-manager.git
 ```
+This project is bundled with docker for environment setup. The source code is in [Symfony](symfony) directory.
 
-Next, put your Symfony application into `symfony` folder and do not forget to add `symfony.localhost` in your `/etc/hosts` file.
+To run with docker if you have docker and docker-compose setup
+ ```bash
+ $ docker-compose up
+ ```
+ 
+add `symfony.localhost` in your `/etc/hosts` file.
 
-Make sure you adjust `database_host` in `parameters.yml` to the database container alias "db"
+You are done, you can visit your Symfony application on the following URL: `http://symfony.localhost:8080`
 
-Then, run:
+Execute the Docker Container for PHP and
 
-```bash
-$ docker-compose up
-```
+- php bin/console doctrine:migrations:migrate
+- php bin/console doctrine:fixtures:load  
 
-You are done, you can visit your Symfony application on the following URL: `http://symfony.localhost` (and access Kibana on `http://symfony.localhost:81`)
+## API features
+- Get Token with `http://symfony.localhost:8080/api/login_check` with username and password admin, admin.
+- Add the token with Authorization Header Bearer Token: (token from step 1 above)
+- Create a user with `POST http://symfony.localhost:8080/admin` with [username, password, role]
+- Delete a user with `DELETE http://symfony.localhost:8080/admin/{userid}`
+- Create Team with `POST http://symfony.localhost:8080/team` with [name]
+- Add User To a Team with `POST http://symfony.localhost:8080/team/{teamId}/user/{userId}`
+- Delete a User from a team with `DELETE http://symfony.localhost:8080/team/{teamId}/user/{userId}`
+- Delete team only if it does not have any user with `DELETE http://symfony.localhost:8080/team/{teamId}`
 
-_Note :_ you can rebuild all Docker images by running:
 
-```bash
-$ docker-compose build
-```
+## API Documentation
 
-# How it works?
+Visit [Postman Online Documentation](https://documenter.getpostman.com/view/5708461/S11RLGAQ)
 
-Here are the `docker-compose` built images:
+##DataBase Model
 
-* `db`: This is the MySQL database container (can be changed to postgresql or whatever in `docker-compose.yml` file),
-* `php`: This is the PHP-FPM container including the application volume mounted on,
-* `nginx`: This is the Nginx webserver container in which php volumes are mounted too,
-* `elk`: This is a ELK stack container which uses Logstash to collect logs, send them into Elasticsearch and visualize them with Kibana.
+![ERD Diagram](ERD.png)
 
-This results in the following running containers:
+##Domain Model
+![Domain Diagram](Domain%20Model.png)
 
-```bash
-> $ docker-compose ps
-        Name                       Command               State              Ports
---------------------------------------------------------------------------------------------
-dockersymfony_db_1      docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp
-dockersymfony_elk_1     /usr/bin/supervisord -n -c ...   Up      0.0.0.0:81->80/tcp
-dockersymfony_nginx_1   nginx                            Up      443/tcp, 0.0.0.0:80->80/tcp
-dockersymfony_php_1     php-fpm7 -F                      Up      0.0.0.0:9000->9000/tcp
-```
-
-# Read logs
-
-You can access Nginx and Symfony application logs in the following directories on your host machine:
-
-* `logs/nginx`
-* `logs/symfony`
-
-# Use Kibana!
-
-You can also use Kibana to visualize Nginx & Symfony logs by visiting `http://symfony.localhost:81`.
-
-# Use xdebug!
-
-To use xdebug change the line `"docker-host.localhost:127.0.0.1"` in docker-compose.yml and replace 127.0.0.1 with your machine ip addres.
-If your IDE default port is not set to 5902 you should do that, too.
-
-# Code license
-
-You are free to use the code in this repository under the terms of the 0-clause BSD license. LICENSE contains a copy of this license.
+##Things To Improve
+- Set up Environment for Test including db
+- Use a user provider for the jwt
+- complete tests
+- Perfect Domain Model diagram
