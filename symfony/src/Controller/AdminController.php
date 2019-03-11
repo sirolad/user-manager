@@ -18,17 +18,6 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin", name="admin", methods={"GET"})
-     */
-    public function index()
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/AdminController.php',
-        ]);
-    }
-
-    /**
      * @Route("/admin", name="add_user", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
