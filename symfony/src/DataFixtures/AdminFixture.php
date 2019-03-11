@@ -14,7 +14,8 @@ class AdminFixture extends Fixture implements DependentFixtureInterface
     {
         $role = $manager->getRepository(Role::class)->find(1);
         $admin = new User();
-        $admin->setName('Admin');
+        $admin->setUsername('admin');
+        $admin->setPassword('admin');
         $admin->setRole($role);
         $manager->persist($admin);
 

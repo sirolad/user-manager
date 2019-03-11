@@ -3,16 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity(fields="name", message="That name is taken!")
+ * @UniqueEntity(fields="username", message="That username is taken!")
  */
-class User implements UserInterface
+class User
 {
     /**
      * @ORM\Id()
@@ -22,15 +20,15 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=40)
      * @Assert\NotBlank()
      */
-    private $name;
+    private $username;
 
     /**
-     * @ORM\Column(type="string", unique=true)
+     * @ORM\Column(type="string", length=40, nullable=true)
      */
-    private $apiKey;
+    private $password;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Role")
@@ -43,14 +41,26 @@ class User implements UserInterface
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getUsername(): ?string
     {
-        return $this->name;
+        return $this->username;
     }
 
-    public function setName(string $name): self
+    public function setUsername(string $username): self
     {
-        $this->name = $name;
+        $this->username = $username;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(?string $password): self
+    {
+        $this->password = $password;
 
         return $this;
     }
@@ -65,27 +75,5 @@ class User implements UserInterface
         $this->role = $role;
 
         return $this;
-    }
-
-    public function getUsername()
-    {
-        return $this->name;
-    }
-
-    public function getRoles()
-    {
-        return $this->getRole();
-    }
-
-    public function getPassword()
-    {
-    }
-
-    public function getSalt()
-    {
-    }
-
-    public function eraseCredentials()
-    {
     }
 }

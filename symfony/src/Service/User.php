@@ -35,7 +35,8 @@ class User
     public function addUser(Request $request)
     {
         $user = new \App\Entity\User();
-        $user->setName($request->get('name'));
+        $user->setUsername($request->get('username'));
+        $user->setPassword($request->get('password'));
         $role = $this->roleRepository->findOneBy(['role' => $request->get('role')]);
         $user->setRole($role);
         $errors = $this->validator->validate($user);
