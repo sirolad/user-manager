@@ -20,6 +20,7 @@ RUN apk add --update \
     php7-openssl \
     php7-pdo \
     php7-pdo_mysql \
+    php7-pdo_sqlite \
     php7-mysqli \
     php7-xml \
     php7-zlib \
